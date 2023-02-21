@@ -5,11 +5,13 @@ usuarios = [{'user': 'jvnsilva', 'password': '456123'}, {
     'user': 'jbres', 'password': '321654'}, {'user': 'bnmagalhaes', 'password': '123456'}, {'user': 'msnunes', 'password': '1234567'}, {'user': 'seis5', 'password': '555555'}]
 acessos_negados = []
 logins_confirmados = []
-modificacoes = []
+modificacoes = [['jvnsilva', 'Launch System', '20/02/2023', '20:45:11']]
 fez_modificacao = False
-
+saldo = 25500
 
 # Decorator para capturar horário e dependendo da ação do usuário capturar o nome do user
+
+
 def controle_horario(funcao):
     def wrapper(*args):
         horario = datetime.now()
@@ -22,8 +24,7 @@ def controle_horario(funcao):
 
         if fez_modificacao == True:
             modificacoes.append(
-                (user, f'Tipo de Operação: {tipo_modificacao}', f'{horario.day}/{horario.month}/{horario.year}', f'{horario.hour}:{horario.minute}:{horario.second}'))
-            print(modificacoes)
+                [user, f'Tipo de Operação: {tipo_modificacao}', f'{horario.day}/{horario.month}/{horario.year}', f'{horario.hour}:{horario.minute}:{horario.second}'])
     return wrapper
 
 
@@ -50,8 +51,8 @@ def faz_login(bd_usuarios=usuarios):
 
 
 @controle_horario
-def saque(saldo, valor):
-    global fez_modificacao, tipo_modificacao
+def saque(valor):
+    global fez_modificacao, tipo_modificacao, saldo
     if usuario_confirmado == True:
         if type(valor) == float or type(valor) == int:
             if valor <= saldo:
@@ -68,8 +69,8 @@ def saque(saldo, valor):
 
 
 @controle_horario
-def deposito(saldo, valor):
-    global fez_modificacao, tipo_modificacao
+def deposito(valor):
+    global fez_modificacao, tipo_modificacao, saldo
     if usuario_confirmado == True:
         if type(valor) == float or type(valor) == int:
             if valor > 0:
@@ -98,6 +99,7 @@ def centralizar_linha(string, total_caracteres):
     print(f'{separador*(espacos//2)}{string}{separador*(espacos//2)}')
 
 
+# Função estética para criar um header para a aplicação no CMD
 def cria_header(string, separador):
     criar_linha(100, separador)
     centralizar_linha(
@@ -108,7 +110,6 @@ def cria_header(string, separador):
 finalizar_programa = False
 credencial_confirmada = False
 usuario_confirmado = False
-saldo = 25500
 
 while finalizar_programa != True:
     if usuario_confirmado == False:
@@ -145,28 +146,33 @@ while finalizar_programa != True:
         escolha_2 = input('\nDigite a operação: ')
 
         if escolha_2 == '1':
-            cria_header('Sistema Financeiro A.C.M ', '=')
+            cria_header(f'Saldo atual: R${saldo:.2f}', '=')
         elif escolha_2 == '2':
             cria_header('Sistema Financeiro A.C.M ', '=')
+            print(f'Saldo para saques: R${saldo:.2f}')
+            valor_saque = float(
+                input('Insira o valor do saque a ser realizado: \n'))
+            saque(valor_saque)
+            print(f'Saldo atualizado: R${saldo:.2f}')
         elif escolha_2 == '3':
             cria_header('Sistema Financeiro A.C.M ', '=')
+            print(f'Saldo atual: R${saldo:.2f}')
+            valor_deposito = float(
+                input('Insira o valor do depósito a ser realizado: \n'))
+            deposito(valor_deposito)
+            print(f'Saldo atualizado: R${saldo:.2f}')
         elif escolha_2 == '4':
             cria_header('Sistema Financeiro A.C.M ', '=')
+            contador = 1
+            for log in modificacoes:
+                print(
+                    f'{contador} - User: {log[0]} | {log[1]} | Data de modificação: {log[2]} | Horário de Modificação: {log[3]}')
+                contador += 1
         elif escolha_2 == '5':
-            print(' ')
-            print(' ')
-            print(' ')
-            print('Realizando Log Out e Reiniciando sistema...')
-            print(' ')
-            print(' ')
+            print('\n\nRealizando Log Out e Reiniciando sistema...\n\n')
             usuario_confirmado = False
         elif escolha_2 == '6':
-            print(' ')
-            print(' ')
-            print(' ')
-            print('Finalizando Programa.')
-            print(' ')
-            print(' ')
+            print('\n\nFinalizando Programa.\n\n')
             finalizar_programa = True
         else:
             pass
