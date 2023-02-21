@@ -9,6 +9,7 @@ modificacoes = []
 fez_modificacao = False
 
 
+# Decorator para capturar horário e dependendo da ação do usuário capturar o nome do user
 def controle_horario(funcao):
     def wrapper(*args):
         horario = datetime.now()
@@ -27,6 +28,7 @@ def controle_horario(funcao):
 
 
 @controle_horario
+# Captura a entrado do user (username e senha) e verifica com os usuarios e senhas cadastrados
 def faz_login(bd_usuarios=usuarios):
     global usuario_confirmado, acesso_negado, user
     user = input('\nDigite seu usuário: ')
@@ -83,11 +85,12 @@ def deposito(saldo, valor):
         print('Somente usuário autorizado')
 
 
-def criar_linha(num=1, caracter='='):
+def criar_linha(num=1, caracter='='):  # Função estética para criar linhas no CMD
     separador = caracter
     print(f'{separador*num}')
 
 
+# Função estética para centralizar strings no CMD
 def centralizar_linha(string, total_caracteres):
     total_string = int(len(string))
     espacos = total_caracteres - total_string
@@ -95,16 +98,21 @@ def centralizar_linha(string, total_caracteres):
     print(f'{separador*(espacos//2)}{string}{separador*(espacos//2)}')
 
 
+def cria_header(string, separador):
+    criar_linha(100, separador)
+    centralizar_linha(
+        string, 100)
+    criar_linha(100, separador)
+
+
 finalizar_programa = False
 credencial_confirmada = False
 usuario_confirmado = False
+saldo = 25500
 
 while finalizar_programa != True:
     if usuario_confirmado == False:
-        criar_linha(100, '=')
-        centralizar_linha(
-            'Sistema Financeiro A.C.M ', 100)
-        criar_linha(100, '=')
+        cria_header('Sistema Financeiro A.C.M ', '=')
         centralizar_linha(
             'Para acessar o nosso sistema é necessário fazer o login.', 100)
         escolha_1 = input('\nRealizar o login? S / N\n')
@@ -126,15 +134,42 @@ while finalizar_programa != True:
             finalizar_programa = True
 
     if credencial_confirmada == True:
-        criar_linha(100, '=')
-        centralizar_linha(
-            'Sistema Financeiro A.C.M ', 100)
-        criar_linha(100, '=')
+        cria_header('Sistema Financeiro A.C.M ', '=')
         print('\nQual operação você deseja realizar: \n')
-        print('1 - Saque ')
-        print('2 - Depósito ')
-        print('3 - Verificar Log de Mudanças ')
+        print('1 - Verificar Saldo ')
+        print('2 - Saque ')
+        print('3 - Depósito ')
+        print('4 - Verificar Log de Mudanças ')
+        print('5 - Log Out / Trocar de User')
+        print('6 - Finalizar programa')
         escolha_2 = input('\nDigite a operação: ')
+
+        if escolha_2 == '1':
+            cria_header('Sistema Financeiro A.C.M ', '=')
+        elif escolha_2 == '2':
+            cria_header('Sistema Financeiro A.C.M ', '=')
+        elif escolha_2 == '3':
+            cria_header('Sistema Financeiro A.C.M ', '=')
+        elif escolha_2 == '4':
+            cria_header('Sistema Financeiro A.C.M ', '=')
+        elif escolha_2 == '5':
+            print(' ')
+            print(' ')
+            print(' ')
+            print('Realizando Log Out e Reiniciando sistema...')
+            print(' ')
+            print(' ')
+            usuario_confirmado = False
+        elif escolha_2 == '6':
+            print(' ')
+            print(' ')
+            print(' ')
+            print('Finalizando Programa.')
+            print(' ')
+            print(' ')
+            finalizar_programa = True
+        else:
+            pass
     else:
         criar_linha(100, '=')
         print('\nAcesso Negado.')
